@@ -83,5 +83,11 @@ Zbuduj obraz lokalnie i załaduj go do swojego klastra. Nie publikujemy jeszcze 
 ---
 
 ## Rozwiązanie zadania
+### Wyniki komend `kubectl get pods` i `kubectl get services`
+![get pods and services](./k8s-get-pods-and-services.png)
 
-...
+### Wyniki zapytań `curl GET /health`, `curl -X POST /tasks` i `curl GET /tasks`
+![curl results](./k8s-curl-results.png)
+
+### Wynik komendy `kubectl describe pod <nazwa-poda-backend>`
+![describe pod backend](./k8s-describe-pod-backend.png)
