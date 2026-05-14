@@ -5,7 +5,7 @@ metadata:
   labels:
     app: backend
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: backend
@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: jnadolski223/task-manager-backend:1.0.0
+          image: task-manager-backend:1.0.0
           ports:
             - containerPort: 3000
           env:

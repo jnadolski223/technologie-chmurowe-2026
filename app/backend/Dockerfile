@@ -12,11 +12,9 @@ COPY package*.json ./
 RUN npm ci --omit=dev
 
 FROM node:24-alpine AS production
-RUN addgroup -S app && adduser -S app -G app
 WORKDIR /app
-COPY --chown=app:app package*.json ./
-COPY --from=builder --chown=app:app /app/dist ./dist
-COPY --from=dependencies --chown=app:app /app/node_modules ./node_modules
-USER app
+COPY package*.json ./
+COPY --from=builder /app/dist ./dist
+COPY --from=dependencies /app/node_modules ./node_modules
 EXPOSE 8080
 CMD ["npm", "start"]
