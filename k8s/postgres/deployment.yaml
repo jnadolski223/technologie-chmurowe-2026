@@ -19,6 +19,9 @@ spec:
           image: postgres:17-alpine
           ports:
             - containerPort: 5432
+          volumeMounts:
+            - name: postgres-data
+              mountPath: /var/lib/postgresql/data
           env:
             - name: POSTGRES_USER
               valueFrom:
@@ -62,3 +65,7 @@ spec:
             limits:
               memory: "2Gi"
               cpu: "2000m"
+      volumes:
+        - name: postgres-data
+          persistentVolumeClaim:
+            claimName: postgres-pvc
