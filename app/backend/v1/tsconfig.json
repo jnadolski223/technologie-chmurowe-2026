@@ -5,11 +5,11 @@
     "rootDir": "./src",
     "outDir": "./dist",
 
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "target": "ESNext",
+    "module": "nodenext",
+    "moduleResolution": "nodenext",
+    "target": "esnext",
     "types": ["node"],
-    "lib": ["ESNext"],
+    "lib": ["esnext"],
     "skipLibCheck": true,
 
     "sourceMap": true,

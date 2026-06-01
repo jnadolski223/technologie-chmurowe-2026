@@ -1,4 +1,4 @@
-FROM node:24-alpine AS builder
+FROM node:24-alpine AS build
 WORKDIR /app
 COPY package*.json ./
 COPY tsconfig.json ./
@@ -11,10 +11,10 @@ WORKDIR /app
 COPY package*.json ./
 RUN npm ci --omit=dev
 
-FROM node:24-alpine AS production
+FROM node:24-alpine
 WORKDIR /app
 COPY package*.json ./
-COPY --from=builder /app/dist ./dist
+COPY --from=build /app/dist ./dist
 COPY --from=dependencies /app/node_modules ./node_modules
 EXPOSE 8080
 CMD ["npm", "start"]

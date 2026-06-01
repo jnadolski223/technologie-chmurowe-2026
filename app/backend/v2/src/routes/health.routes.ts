@@ -9,15 +9,16 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
     res.status(200).json({
       status: 'OK',
       message: 'Server connected to the database',
-      reason: ''
+      version: '2.0.0'
     });
   } catch (err) {
-    console.error(`[SERVER ERROR - GET /health] Server disconnected from the database: ${err}`);
     res.status(503).json({
       status: 'Service Unavailable',
       message: 'Server disconnected from the database',
-      reason: err
+      reason: `${err}`
     });
+
+    throw new Error(`[GET /health] Server disconnected from the database: ${err}`);
   }
 });
 
