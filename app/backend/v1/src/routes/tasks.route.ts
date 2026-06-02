@@ -1,6 +1,6 @@
 import { Router, type Request, type Response } from 'express';
-import { tasksService } from '../services/tasks.service.js';
 import type { Task } from '../models/task.model.js';
+import { tasksService } from '../services/tasks.service.js';
 
 const router: Router = Router();
 
@@ -134,7 +134,7 @@ router.patch('/:taskId', async (req: Request, res: Response): Promise<void> => {
   }
 });
 
-router.delete(':/taskId', async (req: Request, res: Response): Promise<void> => {
+router.delete('/:taskId', async (req: Request, res: Response): Promise<void> => {
   const { taskId } = req.params;
   const parsedTaskId: number = parseInt(String(taskId), 10);
   if (isNaN(parsedTaskId)) {
