@@ -1,6 +1,6 @@
 import express, { type Express } from 'express';
-import healthRoutes from './routes/health.routes.js';
-import tasksRoutes from './routes/tasks.routes.js';
+import healthRoutes from './routes/health.route.js';
+import tasksRoutes from './routes/tasks.route.js';
 
 const app: Express = express();
 

@@ -18,12 +18,10 @@ export const initializeDatabase = async (): Promise<void> => {
           completed BOOLEAN DEFAULT false
       );
     `);
-
     await postgresClient.query(`
       ALTER TABLE tasks
       ADD COLUMN IF NOT EXISTS priority VARCHAR(20) NOT NULL DEFAULT 'medium'
     `);
-
     console.log('Table "tasks" is ready');
   } catch (err) {
     throw new Error(`Failed to create table "tasks": ${err}`);

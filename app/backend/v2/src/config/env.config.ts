@@ -1,4 +1,4 @@
-import { validateEnvironmentVariable } from '../utils/validateEnvironmentVariable.utils.js';
+import { validateEnvironmentVariable } from '../utils/validateEnvironmentVariable.util.js';
 
 export const config = {
   postgres: {

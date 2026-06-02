@@ -8,7 +8,8 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
     await postgresClient.query('SELECT 1');
     res.status(200).json({
       status: 'OK',
-      message: 'Server connected to the database'
+      message: 'Server connected to the database',
+      version: '2.0.0'
     });
   } catch (err) {
     res.status(503).json({
@@ -16,7 +17,6 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
       message: 'Server disconnected from the database',
       reason: `${err}`
     });
-
     throw new Error(`[GET /health] Server disconnected from the database: ${err}`);
   }
 });

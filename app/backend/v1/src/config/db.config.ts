@@ -18,7 +18,6 @@ export const initializeDatabase = async (): Promise<void> => {
           completed BOOLEAN DEFAULT false
       );
     `);
-
     console.log('Table "tasks" is ready');
   } catch (err) {
     throw new Error(`Failed to create table "tasks": ${err}`);

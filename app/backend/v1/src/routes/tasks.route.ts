@@ -1,21 +1,16 @@
 import { Router, type Request, type Response } from 'express';
-import { type QueryResult } from 'pg';
-import { postgresClient } from '../config/db.config.js';
-import { type Task } from '../models/task.model.js';
+import { tasksService } from '../services/tasks.service.js';
+import type { Task } from '../models/task.model.js';
 
 const router: Router = Router();
 
 router.get('/', async (_req: Request, res: Response): Promise<void> => {
   try {
-    const result: QueryResult<Task> = await postgresClient.query(`
-      SELECT id, content, completed
-      FROM tasks
-    `);
-
+    const tasks: Task[] = await tasksService.getAll();
     res.status(200).json({
       status: 'OK',
       message: 'Tasks fetched successfully',
-      data: result.rows
+      data: tasks
     });
   } catch (err) {
     res.status(500).json({
@@ -23,7 +18,6 @@ router.get('/', async (_req: Request, res: Response): Promise<void> => {
       message: 'Failed to fetch tasks',
       reason: `${err}`
     });
-
     throw new Error(`[GET /tasks] Failed to fetch tasks: ${err}`);
   }
 });
@@ -35,7 +29,6 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to create a new task',
       reason: `Body cannot be empty`
     });
-
     return;
   }
 
@@ -45,40 +38,32 @@ router.post('/', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to create a new task',
       reason: `Missing required field: 'content'`
     });
-
     return;
   }
 
-  const { content } = req.body
+  const content: string = String(req.body.content);
   if (content.trim().length === 0) {
     res.status(422).json({
       status: 'Unprocessable Entity',
       message: 'Failed to create a new task',
       reason: `Field 'content' cannot be empty`
     });
-
     return;
   }
 
   try {
-    const result: QueryResult<Task> = await postgresClient.query(`
-      INSERT INTO tasks (content)
-      VALUES ($1)
-      RETURNING id, content, completed
-    `, [content]);
-
+    const createdTask: Task = await tasksService.create(content);
     res.status(201).json({
       status: 'Created',
       message: 'New task created successfully',
-      data: result.rows[0]
-    })
+      data: createdTask
+    });
   } catch (err) {
     res.status(500).json({
       status: 'Internal Server Error',
       message: 'Failed to create a new task',
       reason: `${err}`
     });
-
     throw new Error(`[POST /tasks] Failed to create a new task: ${err}`);
   }
 });
@@ -90,7 +75,6 @@ router.patch('/:taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to update the task',
       reason: `Body cannot be empty`
     });
-
     return;
   }
 
@@ -102,7 +86,6 @@ router.patch('/:taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to update the task',
       reason: `Invalid ID format - must be a number`
     });
-
     return;
   }
 
@@ -112,7 +95,6 @@ router.patch('/:taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to update the task',
       reason: `Missing required field: 'completed'`
     });
-
     return;
   }
 
@@ -123,32 +105,24 @@ router.patch('/:taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to update the task',
       reason: `Field 'completed' must be a boolean`
     });
-
     return;
   }
 
   try {
-    const result: QueryResult<Task> = await postgresClient.query(`
-      UPDATE tasks
-      SET completed = $1
-      WHERE id = $2
-      RETURNING id, content, completed
-    `, [completed, parsedTaskId]);
-
-    if (result.rowCount === 0) {
+    const updatedTask: Task | null = await tasksService.updateStatus(parsedTaskId, completed);
+    if (!updatedTask) {
       res.status(404).json({
         status: 'Not Found',
         message: 'Failed to update the task',
         reason: `Task with ID ${parsedTaskId} not found`
       });
-
       return;
     }
 
     res.status(200).json({
       status: 'OK',
       message: 'Task updated successfully',
-      data: result.rows[0]
+      data: updatedTask
     });
   } catch (err) {
     res.status(500).json({
@@ -156,12 +130,11 @@ router.patch('/:taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to update the task',
       reason: `${err}`
     });
-
     throw new Error(`[PATCH /tasks/:${parsedTaskId}] Failed to update the task: ${err}`);
   }
 });
 
-router.delete(':taskId', async (req: Request, res: Response): Promise<void> => {
+router.delete(':/taskId', async (req: Request, res: Response): Promise<void> => {
   const { taskId } = req.params;
   const parsedTaskId: number = parseInt(String(taskId), 10);
   if (isNaN(parsedTaskId)) {
@@ -170,24 +143,17 @@ router.delete(':taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to delete the task',
       reason: `Invalid ID format - must be a number`
     });
-
     return;
   }
 
   try {
-    const result: QueryResult<Task> = await postgresClient.query(`
-      DELETE FROM tasks
-      WHERE id = $1
-      RETURNING id, content, completed
-    `, [parsedTaskId]);
-
-    if (result.rowCount === 0) {
+    const isDeleted: boolean = await tasksService.delete(parsedTaskId);
+    if (!isDeleted) {
       res.status(404).json({
         status: 'Not Found',
         message: 'Failed to delete the task',
         reason: `Task with ID ${parsedTaskId} not found`
       });
-
       return;
     }
 
@@ -198,7 +164,6 @@ router.delete(':taskId', async (req: Request, res: Response): Promise<void> => {
       message: 'Failed to delete the task',
       reason: `${err}`
     });
-
     throw new Error(`[DELETE /tasks/:${parsedTaskId}] Failed to delete the task: ${err}`);
   }
 });

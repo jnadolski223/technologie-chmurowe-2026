@@ -1,4 +1,4 @@
-import type { Priority } from '../types/priority.types.js';
+import type { Priority } from './priority.model.js';
 
 export interface Task {
   id: number;
