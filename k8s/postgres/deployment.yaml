@@ -2,8 +2,6 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: postgres-deployment
-  labels:
-    app: postgres
 spec:
   replicas: 1
   selector:
@@ -27,17 +25,17 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_USER
+                  key: DB_USER
             - name: POSTGRES_PASSWORD
               valueFrom:
                 secretKeyRef:
                   name: postgres-secret
-                  key: POSTGRES_PASSWORD
+                  key: DB_PASSWORD
             - name: POSTGRES_DB
               valueFrom:
                 configMapKeyRef:
-                  name: postgres-config
-                  key: POSTGRES_DB
+                  name: postgres-configmap
+                  key: DB_NAME
           readinessProbe:
             exec:
               command:
@@ -46,8 +44,8 @@ spec:
                 - admin
                 - -d
                 - tasks_db
-            initialDelaySeconds: 10
-            periodSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
           livenessProbe:
             exec:
               command:
@@ -56,15 +54,15 @@ spec:
                 - admin
                 - -d
                 - tasks_db
-            initialDelaySeconds: 30
-            periodSeconds: 10
+            initialDelaySeconds: 10
+            periodSeconds: 15
           resources:
             requests:
-              memory: "256Mi"
-              cpu: "500m"
+              memory: "128Mi"
+              cpu: "100m"
             limits:
-              memory: "2Gi"
-              cpu: "2000m"
+              memory: "1Gi"
+              cpu: "1000m"
       volumes:
         - name: postgres-data
           persistentVolumeClaim:
