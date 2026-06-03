@@ -133,10 +133,10 @@ export default function App() {
   };
 
   return (
-    <div>
+    <div className="app-container">
       <h1>Menedżer Zadań</h1>
 
-      {state.error && <div><strong>Błąd:</strong> {state.error}</div>}
+      {state.error && <div className="error-banner"><strong>Błąd:</strong> {state.error}</div>}
 
       <h2>Dodaj nowe zadanie</h2>
       <TaskForm
