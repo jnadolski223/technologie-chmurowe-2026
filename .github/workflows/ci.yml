@@ -55,21 +55,24 @@ jobs:
           kind load docker-image ghcr.io/${{ github.repository }}/frontend:v1.0.0 --name test-cluster
           kind load docker-image docker.io/library/postgres:17-alpine --name test-cluster
 
-      - name: Deploy the system
+      - name: Deploy Ingress Controller
         run: |
           kubectl apply -f k8s/utils/nginx-ingress-controller.yaml
+          kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=120s
+
+      - name: Deploy application components
+        run: |
           kubectl apply -f k8s/postgres/
           kubectl apply -f k8s/backend/
           kubectl apply -f k8s/frontend/
           kubectl apply -f k8s/ingress/
 
-      - name: Wait for the Pods to be ready
+      - name: Wait for the application's Pods to be ready
         run: |
           kubectl rollout status deployment/postgres-deployment --timeout=120s
           kubectl rollout status deployment/backend-blue --timeout=120s
           kubectl rollout status deployment/backend-green --timeout=120s
           kubectl rollout status deployment/frontend-deployment --timeout=120s
-          kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=120s
 
       - name: HTTP tests
         run: |
