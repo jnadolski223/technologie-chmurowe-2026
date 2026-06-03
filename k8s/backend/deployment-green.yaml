@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
         - name: backend
-          image: task-manager-backend:2.0.0
+          image: ghcr.io/jnadolski223/technologie-chmurowe-2026/backend:v2.0.0
           ports:
             - containerPort: 8080
           env:

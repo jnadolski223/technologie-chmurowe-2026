@@ -218,6 +218,15 @@ kubectl delete deployment backend-blue
   wskazuje na green po przełączeniu. Output `curl /api/health` potwierdza, że v2 obsługuje ruch (pole `version: 2.0.0`).
   Student opisuje w 3–5 zdaniach jak działa mechanizm przełączenia i dlaczego blue-green eliminuje przestój.
 
-### Rozwiązanie zadania
+## Rozwiązanie zadania
+### Output komendy `kubectl get pods`
+![get pods](./k8s-get-pods.png)
 
-...
+### Output komendy `kubectl get ingress`
+![get ingress](./k8s-get-ingress.png)
+
+### Zrzut ekranu z działającego frontendu wyświetlającego zadania z priorytetami
+![app result](./k8s-app-result.png)
+
+### Output `curl http://localhost/api/health` dla v1 i v2
+![curl results](./k8s-curl-results.png)

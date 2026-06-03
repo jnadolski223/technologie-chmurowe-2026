@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: frontend
-          image: task-manager-frontend:1.0.0
+          image: ghcr.io/jnadolski223/technologie-chmurowe-2026/frontend:v1.0.0
           ports:
             - containerPort: 80
           readinessProbe:
