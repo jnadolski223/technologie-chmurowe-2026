@@ -59,6 +59,7 @@ jobs:
         run: |
           kubectl apply -f k8s/utils/nginx-ingress-controller.yaml
           kubectl rollout status deployment/ingress-nginx-controller -n ingress-nginx --timeout=120s
+          sleep 15
 
       - name: Deploy application components
         run: |
